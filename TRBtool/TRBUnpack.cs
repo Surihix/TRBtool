@@ -21,8 +21,9 @@ namespace TRBtool
                 Directory.Delete(extractTRBdir, true);
             }
 
-            var inIMGBfile = Path.Combine(inTRBfileDir, Path.GetFileNameWithoutExtension(inTRBfile) + ".imgb");
-            var extractIMGBdir = Path.Combine(inTRBfileDir, "_" + inIMGBfile);
+            var inIMGBfileName = Path.GetFileNameWithoutExtension(inTRBfile) + ".imgb";
+            var inIMGBfile = Path.Combine(inTRBfileDir, inIMGBfileName);
+            var extractIMGBdir = Path.Combine(inTRBfileDir, "_" + inIMGBfileName);
 
             if (File.Exists(inIMGBfile))
             {

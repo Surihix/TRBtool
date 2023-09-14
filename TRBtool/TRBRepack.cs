@@ -14,9 +14,9 @@ namespace TRBtool
     {
         public static void RepackTRB(string inExtractedTRBdir)
         {
-            var outTRBname = Path.GetFileName(inExtractedTRBdir).Remove(0, 1);
+            var outTRBfileName = Path.GetFileName(inExtractedTRBdir).Remove(0, 1);
             var outTRBfileDir = Path.GetDirectoryName(inExtractedTRBdir);
-            var outTRBfile = Path.Combine(outTRBfileDir, outTRBname);
+            var outTRBfile = Path.Combine(outTRBfileDir, outTRBfileName);
 
             var trbOffsetsFile = Path.Combine(inExtractedTRBdir, CmnMethods.TRBOffsetsFile);
             var resourceTypeFile = Path.Combine(inExtractedTRBdir, "RESOURCE_TYPE");
@@ -32,8 +32,9 @@ namespace TRBtool
                 File.Delete(tmpDataFile);
             }
 
-            var outIMGBfile = Path.Combine(outTRBfileDir, Path.GetFileNameWithoutExtension(outTRBname) + ".imgb");
-            var extractedIMGBdir = Path.Combine(outTRBfileDir, "_" + outIMGBfile);
+            var outIMGBfileName = Path.GetFileNameWithoutExtension(outTRBfileName) + ".imgb";
+            var outIMGBfile = Path.Combine(outTRBfileDir, outIMGBfileName);
+            var extractedIMGBdir = Path.Combine(outTRBfileDir, "_" + outIMGBfileName);
 
             var oldTRBfile = Path.Combine(outTRBfileDir, Path.GetFileName(outTRBfile) + ".old");
             var oldIMGBfile = Path.Combine(outTRBfileDir, Path.GetFileName(outIMGBfile) + ".old");
@@ -164,37 +165,47 @@ namespace TRBtool
                             }
                         }
 
-                        // Update 'RESOURCE_TYPE' and
-                        // 'RESOURCE_ID' related offsets
-                        var currentWriterPos = (uint)trbOffsetsWriter.BaseStream.Position + 8;
-                        var resTypeStartPos = (uint)new FileInfo(tmpDataFile).Length;
-                        var resIdsStartPos = resTypeStartPos + (uint)new FileInfo(resourceTypeFile).Length;
+                        // Update 'RESOURCE_TYPE',
+                        // 'RESOURCE_ID' and SEDB
+                        // header offsets
+                        var offsetWriterPos = (uint)trbOffsetsWriter.BaseStream.Position + 8;
+                        var packedDataSize = (uint)new FileInfo(tmpDataFile).Length;
+
+                        var resTypeStartPos = packedDataSize;
+                        var resTypeSize = (uint)new FileInfo(resourceTypeFile).Length;
+
+                        var resIdsStartPos = resTypeStartPos + resTypeSize;
+                        var resIdsSize = (uint)new FileInfo(resourceIdFile).Length;
+
 
                         // Use a formulae to 
                         // compute the sizes
-                        var resTypeSize = 64 + (20 * resourceCount);
-                        var resIdsSize = 64 + (32 * resourceCount);
+                        var resTypeMemSize = 64 + (20 * resourceCount);
+                        var resIdsMemSize = 64 + (32 * resourceCount);
 
-                        trbOffsetsWriter.BaseStream.Position = currentWriterPos;
+                        trbOffsetsWriter.BaseStream.Position = offsetWriterPos;
                         trbOffsetsWriter.WriteBytesUInt32(resTypeStartPos, false);
 
-                        trbOffsetsWriter.BaseStream.Position = currentWriterPos + 4;
-                        trbOffsetsWriter.WriteBytesUInt32(resTypeSize, false);
+                        trbOffsetsWriter.BaseStream.Position = offsetWriterPos + 4;
+                        trbOffsetsWriter.WriteBytesUInt32(resTypeMemSize, false);
 
-                        currentWriterPos += 16;
+                        offsetWriterPos += 16;
 
-                        trbOffsetsWriter.BaseStream.Position = currentWriterPos;
+                        trbOffsetsWriter.BaseStream.Position = offsetWriterPos;
                         trbOffsetsWriter.WriteBytesUInt32(resIdsStartPos, false);
 
-                        trbOffsetsWriter.BaseStream.Position = currentWriterPos + 4;
-                        trbOffsetsWriter.WriteBytesUInt32(resIdsSize, false);
+                        trbOffsetsWriter.BaseStream.Position = offsetWriterPos + 4;
+                        trbOffsetsWriter.WriteBytesUInt32(resIdsMemSize, false);
 
-                        // Compute paths start position
-                        // and write it in the header
+                        // Write header related
+                        // offsets
                         var resIdsPathsStart = resIdsStartPos + (resourceCount * 16);
-
                         trbOffsetsWriter.BaseStream.Position = 52;
                         trbOffsetsWriter.WriteBytesUInt32(resIdsPathsStart, false);
+
+                        var totalTRBsize = resourceDataStart + packedDataSize + resTypeSize + resIdsSize;
+                        trbOffsetsWriter.BaseStream.Position = 16;
+                        trbOffsetsWriter.WriteBytesUInt32(totalTRBsize, false);
                     }
                 }
             }

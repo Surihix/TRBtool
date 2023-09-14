@@ -11,6 +11,6 @@ namespace TRBtool.SupportClasses
             Environment.Exit(0);
         }
 
-        public static string TRBOffsetsFile = "TRB_Offsets";
+        public static string TRBOffsetsFile = "SEDBRES_data";
     }
 }
