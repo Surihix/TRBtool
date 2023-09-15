@@ -104,6 +104,7 @@ namespace TRBtool
                                                     {
                                                         if (Directory.Exists(extractedIMGBdir))
                                                         {
+                                                            Console.WriteLine("Detected Image header file");
                                                             IMGB.RepackIMGBType2(currentFile, outIMGBfile, extractedIMGBdir);
                                                         }
                                                     }
