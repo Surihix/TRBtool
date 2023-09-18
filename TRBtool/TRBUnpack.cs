@@ -1,5 +1,5 @@
 ﻿using BinaryReaderEx;
-using IMGBClasses;
+using IMGB;
 using StreamExtension;
 using System;
 using System.IO;
@@ -116,7 +116,7 @@ namespace TRBtool
                         Console.WriteLine("Unpacked " + extractFilePath);
 
                         // IMGB stuff
-                        if (IMGB.ImgHeaderBlockFileExtensions.Contains(currentResourceType))
+                        if (ImageMethods.ImgHeaderBlockFileExtensions.Contains(currentResourceType))
                         {
                             if (File.Exists(inIMGBfile))
                             {
@@ -126,7 +126,7 @@ namespace TRBtool
                                 }
 
                                 Console.WriteLine("Detected Image header file");
-                                IMGB.UnpackIMGB(extractFilePath, inIMGBfile, extractIMGBdir);
+                                ImageMethods.UnpackIMGB(extractFilePath, inIMGBfile, extractIMGBdir);
                             }
                         }
 
