@@ -48,7 +48,7 @@
     <Compile Include="TRBtool\TRBRepack.cs" />
     <Compile Include="TRBtool\Core.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TRBtool\SupportClasses\CmnMethods.cs" />
+    <Compile Include="TRBtool\CmnMethods.cs" />
     <Compile Include="TRBtool\SupportClasses\WriterHelpers.cs" />
     <Compile Include="TRBtool\TRBUnpack.cs" />
   </ItemGroup>

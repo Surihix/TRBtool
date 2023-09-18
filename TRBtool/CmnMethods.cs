@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TRBtool.SupportClasses
+namespace TRBtool
 {
     internal static class CmnMethods
     {
