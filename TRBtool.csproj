@@ -55,5 +55,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IMGBClasses\IMGBClasses.csproj">
+      <Project>{4b2542ff-94f7-4f49-a440-28d35f9970c1}</Project>
+      <Name>IMGBClasses</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
