@@ -22,7 +22,7 @@ namespace TRBtool
             var resourceIdFile = Path.Combine(inExtractedTRBdir, "RESOURCE_ID");
             var tmpDataFile = Path.Combine(inExtractedTRBdir, "_tempData");
 
-            CheckFileExists(trbOffsetsFile, $"Error: Missing file + '{CmnMethods.TRBOffsetsFile}' in the extracted directory.");
+            CheckFileExists(trbOffsetsFile, $"Error: Missing file '{CmnMethods.TRBOffsetsFile}' in the extracted directory.");
             CheckFileExists(resourceTypeFile, "Error: Missing file 'RESOURCE_TYPE' in the extracted directory.");
             CheckFileExists(resourceIdFile, "Error: Missing file 'RESOURCE_ID' in the extracted directory.");
 
@@ -38,8 +38,19 @@ namespace TRBtool
             var oldTRBfile = Path.Combine(outTRBfileDir, Path.GetFileName(outTRBfile) + ".old");
             var oldIMGBfile = Path.Combine(outTRBfileDir, Path.GetFileName(outIMGBfile) + ".old");
 
-            File.Move(outTRBfile, oldTRBfile);
+            if (File.Exists(oldTRBfile))
+            {
+                File.Delete(oldTRBfile);
+            }
+            if (File.Exists(oldIMGBfile))
+            {
+                File.Delete(oldIMGBfile);
+            }
 
+            if (File.Exists(outTRBfile))
+            {
+                File.Move(outTRBfile, oldTRBfile);
+            }
             if (File.Exists(outIMGBfile))
             {
                 File.Move(outIMGBfile, oldIMGBfile);
@@ -118,11 +129,11 @@ namespace TRBtool
                                                         // Pad null bytes to make the next
                                                         // start position divisible by 4
                                                         var currentPos = tmpDataStream.Length;
-                                                        var padValueToCheck = 4;
-                                                        if (currentPos % padValueToCheck != 0)
+                                                        var padValue = 4;
+                                                        if (currentPos % padValue != 0)
                                                         {
-                                                            var remainder = currentPos % padValueToCheck;
-                                                            var increaseBytes = padValueToCheck - remainder;
+                                                            var remainder = currentPos % padValue;
+                                                            var increaseBytes = padValue - remainder;
                                                             var newPos = currentPos + increaseBytes;
                                                             var nullBytesAmount = newPos - currentPos;
 
