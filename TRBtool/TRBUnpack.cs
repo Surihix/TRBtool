@@ -1,5 +1,5 @@
 ﻿using BinaryReaderEx;
-using IMGB;
+using IMGBlibrary;
 using StreamExtension;
 using System;
 using System.IO;
@@ -15,21 +15,15 @@ namespace TRBtool
             var inTRBfileDir = Path.GetDirectoryName(inTRBfile);
             var extractTRBdir = Path.Combine(inTRBfileDir, "_" + Path.GetFileName(inTRBfile));
 
-            if (Directory.Exists(extractTRBdir))
-            {
-                Directory.Delete(extractTRBdir, true);
-            }
+            DeleteDirIfExists(extractTRBdir);
 
             var inIMGBfileName = Path.GetFileNameWithoutExtension(inTRBfile) + ".imgb";
-            var inIMGBfile = Path.Combine(inTRBfileDir, inIMGBfileName);
+            var inTRBimgbFile = Path.Combine(inTRBfileDir, inIMGBfileName);
             var extractIMGBdir = Path.Combine(inTRBfileDir, "_" + inIMGBfileName);
 
-            if (File.Exists(inIMGBfile))
+            if (File.Exists(inTRBimgbFile))
             {
-                if (Directory.Exists(extractIMGBdir))
-                {
-                    Directory.Delete(extractIMGBdir, true);
-                }
+                DeleteDirIfExists(extractIMGBdir);
             }
 
 
@@ -114,10 +108,9 @@ namespace TRBtool
 
                         Console.WriteLine("Unpacked " + extractFilePath);
 
-                        // IMGB stuff
                         if (ImageMethods.ImgHeaderBlockFileExtensions.Contains(currentResourceType))
                         {
-                            if (File.Exists(inIMGBfile))
+                            if (File.Exists(inTRBimgbFile))
                             {
                                 if (!Directory.Exists(extractIMGBdir))
                                 {
@@ -125,7 +118,7 @@ namespace TRBtool
                                 }
 
                                 Console.WriteLine("Detected Image header file");
-                                ImageMethods.UnpackIMGB(extractFilePath, inIMGBfile, extractIMGBdir);
+                                ImageMethods.UnpackIMGB(extractFilePath, inTRBimgbFile, extractIMGBdir);
                             }
                         }
 
@@ -153,6 +146,15 @@ namespace TRBtool
             Console.WriteLine("");
             Console.WriteLine("Finished unpacking " + Path.GetFileName(inTRBfile));
             Console.ReadLine();
+        }
+
+
+        static void DeleteDirIfExists(string directoryName)
+        {
+            if (Directory.Exists(directoryName))
+            {
+                Directory.Delete(directoryName, true);
+            }
         }
     }
 }

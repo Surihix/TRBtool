@@ -1,6 +1,6 @@
 ﻿using BinaryReaderEx;
 using BinaryWriterEx;
-using IMGB;
+using IMGBlibrary;
 using StreamExtension;
 using System;
 using System.IO;
@@ -109,7 +109,6 @@ namespace TRBtool
 
                                                 if (File.Exists(currentFile))
                                                 {
-                                                    // IMGB stuff
                                                     if (ImageMethods.ImgHeaderBlockFileExtensions.Contains(currentResType))
                                                     {
                                                         if (Directory.Exists(extractedIMGBdir))
@@ -127,7 +126,8 @@ namespace TRBtool
                                                         fileToPack.ExCopyTo(tmpDataStream, 0, currentResSize);
 
                                                         // Pad null bytes to make the next
-                                                        // start position divisible by 4
+                                                        // start position divisible by a 
+                                                        // pad value
                                                         var currentPos = tmpDataStream.Length;
                                                         var padValue = 4;
                                                         if (currentPos % padValue != 0)

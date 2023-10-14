@@ -9,7 +9,7 @@ namespace TRBtool
         {
             if (args.Length < 2)
             {
-                CmnMethods.ErrorExit("Error: Enough arguments not specified. missing tool action switch or the file to process.");
+                CmnMethods.ErrorExit("Error: Enough arguments not specified\nMust be: TRBtool.exe '-u' or '-r' and 'TRB file or unpacked TRB folder'.");
             }
 
             var toolAction = args[0].Replace("-", "");
@@ -25,7 +25,7 @@ namespace TRBtool
                 }
                 else
                 {
-                    CmnMethods.ErrorExit("Error: Valid action switch is not specified. must be -u for unpacking or -r for repacking.");
+                    CmnMethods.ErrorExit("Error: Proper tool action is not specified\nMust be '-u' for unpacking or '-r' for repacking.");
                 }
 
                 switch (convertedToolAction)
@@ -41,7 +41,7 @@ namespace TRBtool
                     case ActionSwitches.r:
                         if (!Directory.Exists(inTRBfileOrDir))
                         {
-                            CmnMethods.ErrorExit("Error: Specified unpacked directory does not exist.");
+                            CmnMethods.ErrorExit("Error: Specified unpacked directory to repack, does not exist.");
                         }
                         TRB.RepackTRB(inTRBfileOrDir);
                         break;

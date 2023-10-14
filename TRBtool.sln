@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TRBtool", "TRBtool.csproj", "{A3774058-C88E-4968-A8D2-156C8A2E6FAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMGBClasses", "..\IMGBClasses\IMGBClasses.csproj", "{4B2542FF-94F7-4F49-A440-28D35F9970C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMGBlibrary", "..\IMGBlibrary\IMGBlibrary.csproj", "{9BB17BC3-7183-4ECE-92A2-30616EDF4754}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{A3774058-C88E-4968-A8D2-156C8A2E6FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3774058-C88E-4968-A8D2-156C8A2E6FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3774058-C88E-4968-A8D2-156C8A2E6FAE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4B2542FF-94F7-4F49-A440-28D35F9970C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4B2542FF-94F7-4F49-A440-28D35F9970C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4B2542FF-94F7-4F49-A440-28D35F9970C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4B2542FF-94F7-4F49-A440-28D35F9970C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BB17BC3-7183-4ECE-92A2-30616EDF4754}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BB17BC3-7183-4ECE-92A2-30616EDF4754}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BB17BC3-7183-4ECE-92A2-30616EDF4754}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BB17BC3-7183-4ECE-92A2-30616EDF4754}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

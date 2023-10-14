@@ -2,7 +2,7 @@
 
 namespace TRBtool
 {
-    internal static class CmnMethods
+    internal class CmnMethods
     {
         public static void ErrorExit(string errorMsg)
         {
