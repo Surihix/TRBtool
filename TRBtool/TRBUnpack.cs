@@ -33,6 +33,15 @@ namespace TRBtool
             {
                 using (var trbReader = new BinaryReader(trbStream))
                 {
+                    trbReader.BaseStream.Position = 0;
+                    var trbChars = trbReader.ReadBytes(8);
+                    var trbHeader = Encoding.ASCII.GetString(trbChars).Replace("\0", "");
+
+                    if (!trbHeader.Equals("SEDBRES "))
+                    {
+                        CmnMethods.ErrorExit("Error: Not a valid TRB file");
+                    }
+
                     var trbSize = (uint)trbStream.Length;
 
                     trbReader.BaseStream.Position = 52;
