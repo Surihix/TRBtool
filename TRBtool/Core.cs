@@ -20,19 +20,19 @@ namespace TRBtool
             // Dll check
             if (File.Exists("IMGBlibrary.dll"))
             {
-                using (var dllStream = new FileStream("IMGBlibrary.dll", FileMode.Open, FileAccess.Read))
-                {
-                    using (var dllHash = SHA256.Create())
-                    {
-                        var hashArray = dllHash.ComputeHash(dllStream);
-                        var computedHash = BitConverter.ToString(hashArray).Replace("-", "").ToLower();
+                //using (var dllStream = new FileStream("IMGBlibrary.dll", FileMode.Open, FileAccess.Read))
+                //{
+                //    using (var dllHash = SHA256.Create())
+                //    {
+                //        var hashArray = dllHash.ComputeHash(dllStream);
+                //        var computedHash = BitConverter.ToString(hashArray).Replace("-", "").ToLower();
 
-                        if (!computedHash.Equals("259d66e27a0ec1909d300f7383fc1ba2866dcba2ed1a73293ccd9307f65137d8"))
-                        {
-                            CmnMethods.ErrorExit("Error: 'IMGBlibrary.dll' file is corrupt. please check if the dll file is valid.");
-                        }
-                    }
-                }
+                //        if (!computedHash.Equals("259d66e27a0ec1909d300f7383fc1ba2866dcba2ed1a73293ccd9307f65137d8"))
+                //        {
+                //            CmnMethods.ErrorExit("Error: 'IMGBlibrary.dll' file is corrupt. please check if the dll file is valid.");
+                //        }
+                //    }
+                //}
             }
             else
             {
@@ -59,7 +59,7 @@ namespace TRBtool
                         {
                             CmnMethods.ErrorExit("Error: Specified TRB file does not exist.");
                         }
-                        TRB.UnpackTRB(inTRBfileOrDir);
+                        TRBUnpack.UnpackTRB(inTRBfileOrDir);
                         break;
 
                     case ActionSwitches.r:
@@ -67,7 +67,7 @@ namespace TRBtool
                         {
                             CmnMethods.ErrorExit("Error: Specified unpacked directory to repack, does not exist.");
                         }
-                        TRB.RepackTRB(inTRBfileOrDir);
+                        TRBRepack.RepackTRB(inTRBfileOrDir);
                         break;
                 }
             }

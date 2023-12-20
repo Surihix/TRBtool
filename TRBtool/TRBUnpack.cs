@@ -8,7 +8,7 @@ using System.Text;
 
 namespace TRBtool
 {
-    internal partial class TRB
+    internal class TRBUnpack
     {
         public static void UnpackTRB(string inTRBfile)
         {
@@ -117,7 +117,7 @@ namespace TRBtool
 
                         Console.WriteLine("Unpacked " + extractFilePath);
 
-                        if (ImageMethods.ImgHeaderBlockFileExtensions.Contains(currentResourceType))
+                        if (IMGBVariables.ImgHeaderBlockFileExtensions.Contains(currentResourceType))
                         {
                             if (File.Exists(inTRBimgbFile))
                             {
@@ -127,7 +127,7 @@ namespace TRBtool
                                 }
 
                                 Console.WriteLine("Detected Image header file");
-                                ImageMethods.UnpackIMGB(extractFilePath, inTRBimgbFile, extractIMGBdir);
+                                IMGBUnpack.UnpackIMGB(extractFilePath, inTRBimgbFile, extractIMGBdir);
                             }
                         }
 

@@ -9,7 +9,7 @@ using System.Text;
 
 namespace TRBtool
 {
-    internal partial class TRB
+    internal class TRBRepack
     {
         public static void RepackTRB(string inExtractedTRBdir)
         {
@@ -109,12 +109,12 @@ namespace TRBtool
 
                                                 if (File.Exists(currentFile))
                                                 {
-                                                    if (ImageMethods.ImgHeaderBlockFileExtensions.Contains(currentResType))
+                                                    if (IMGBVariables.ImgHeaderBlockFileExtensions.Contains(currentResType))
                                                     {
                                                         if (Directory.Exists(extractedIMGBdir))
                                                         {
                                                             Console.WriteLine("Detected Image header file");
-                                                            ImageMethods.RepackIMGBType2(currentFile, outIMGBfile, extractedIMGBdir);
+                                                            IMGBRepack2.RepackIMGBType2(currentFile, outIMGBfile, extractedIMGBdir);
                                                         }
                                                     }
 
