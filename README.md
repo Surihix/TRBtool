@@ -18,4 +18,5 @@ Note: For the ``-r`` switch, the unpacked TRB folder name is specified in the ex
 ## For Developers
 - This tool makes use of this following reference library:
 <br>**IMGBlibrary** - https://github.com/Surihix/IMGBlibrary
+
 - Refer to this [page](https://github.com/LR-Research-Team/Datalog/wiki/TRB) for information about the the TRB's file structure.
