@@ -61,7 +61,7 @@ namespace TRBtool
                         {
                             CmnMethods.ErrorExit("Error: Specified TRB file does not exist.");
                         }
-                        TRBUnpack.UnpackTRB(inTRBfileOrDir);
+                        TRB.UnpackTRB(inTRBfileOrDir);
                         break;
 
                     case ActionSwitches.r:
@@ -69,7 +69,7 @@ namespace TRBtool
                         {
                             CmnMethods.ErrorExit("Error: Specified unpacked directory to repack, does not exist.");
                         }
-                        TRBRepack.RepackTRB(inTRBfileOrDir);
+                        TRB.RepackTRB(inTRBfileOrDir);
                         break;
                 }
             }

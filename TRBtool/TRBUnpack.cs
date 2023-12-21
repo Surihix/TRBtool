@@ -8,7 +8,7 @@ using System.Text;
 
 namespace TRBtool
 {
-    internal class TRBUnpack
+    internal partial class TRB
     {
         public static void UnpackTRB(string inTRBfile)
         {

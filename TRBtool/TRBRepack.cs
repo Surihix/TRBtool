@@ -9,7 +9,7 @@ using System.Text;
 
 namespace TRBtool
 {
-    internal class TRBRepack
+    internal partial class TRB
     {
         public static void RepackTRB(string inExtractedTRBdir)
         {
