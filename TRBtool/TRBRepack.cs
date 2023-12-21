@@ -18,6 +18,8 @@ namespace TRBtool
             var outTRBfile = Path.Combine(outTRBfileDir, outTRBfileName);
 
             var trbOffsetsFile = Path.Combine(inExtractedTRBdir, CmnMethods.TRBOffsetsFile);
+            var trbOffsetsFileTmp = Path.Combine(inExtractedTRBdir, CmnMethods.TRBOffsetsFile + ".tmp");
+
             var resourceTypeFile = Path.Combine(inExtractedTRBdir, "RESOURCE_TYPE");
             var resourceIdFile = Path.Combine(inExtractedTRBdir, "RESOURCE_ID");
             var tmpDataFile = Path.Combine(inExtractedTRBdir, "_tempData");
@@ -26,10 +28,8 @@ namespace TRBtool
             CheckFileExists(resourceTypeFile, "Error: Missing file 'RESOURCE_TYPE' in the extracted directory.");
             CheckFileExists(resourceIdFile, "Error: Missing file 'RESOURCE_ID' in the extracted directory.");
 
-            if (File.Exists(tmpDataFile))
-            {
-                File.Delete(tmpDataFile);
-            }
+            IfFileExistsDel(trbOffsetsFileTmp);
+            IfFileExistsDel(tmpDataFile);
 
             var outIMGBfileName = Path.GetFileNameWithoutExtension(outTRBfileName) + ".imgb";
             var outIMGBfile = Path.Combine(outTRBfileDir, outIMGBfileName);
@@ -38,14 +38,8 @@ namespace TRBtool
             var oldTRBfile = Path.Combine(outTRBfileDir, Path.GetFileName(outTRBfile) + ".old");
             var oldIMGBfile = Path.Combine(outTRBfileDir, Path.GetFileName(outIMGBfile) + ".old");
 
-            if (File.Exists(oldTRBfile))
-            {
-                File.Delete(oldTRBfile);
-            }
-            if (File.Exists(oldIMGBfile))
-            {
-                File.Delete(oldIMGBfile);
-            }
+            IfFileExistsDel(oldTRBfile);
+            IfFileExistsDel(oldIMGBfile);
 
             if (File.Exists(outTRBfile))
             {
@@ -59,7 +53,9 @@ namespace TRBtool
 
             Console.WriteLine("");
 
-            using (var trbOffsets = new FileStream(trbOffsetsFile, FileMode.Open, FileAccess.ReadWrite))
+            File.Copy(trbOffsetsFile, trbOffsetsFileTmp);
+
+            using (var trbOffsets = new FileStream(trbOffsetsFileTmp, FileMode.Open, FileAccess.ReadWrite))
             {
                 using (var trbOffsetsReader = new BinaryReader(trbOffsets))
                 {
@@ -79,7 +75,7 @@ namespace TRBtool
                                     using (var resIdsReader = new BinaryReader(resIds))
                                     {
 
-                                        using (var tmpDataStream = new FileStream(tmpDataFile, FileMode.OpenOrCreate, FileAccess.Write))
+                                        using (var tmpDataStream = new FileStream(tmpDataFile, FileMode.Append, FileAccess.Write))
                                         {
 
                                             uint resOffsetWritePos = 68;
@@ -109,18 +105,22 @@ namespace TRBtool
 
                                                 if (File.Exists(currentFile))
                                                 {
-                                                    if (IMGBVariables.ImgHeaderBlockFileExtensions.Contains(currentResType))
+                                                    IfFileExistsDel(currentFile + ".tmp");
+
+                                                    File.Copy(currentFile, currentFile + ".tmp");
+
+                                                    if (IMGBVariables.ImgHeaderBlockExtns.Contains(currentResType))
                                                     {
                                                         if (Directory.Exists(extractedIMGBdir))
                                                         {
                                                             Console.WriteLine("Detected Image header file");
-                                                            IMGBRepack2.RepackIMGBType2(currentFile, outIMGBfile, extractedIMGBdir);
+                                                            IMGBRepack2.RepackIMGBType2(currentFile + ".tmp", outIMGBfile, extractedIMGBdir);
                                                         }
                                                     }
 
-                                                    currentResSize = (uint)new FileInfo(currentFile).Length;
+                                                    currentResSize = (uint)new FileInfo(currentFile + ".tmp").Length;
 
-                                                    using (var fileToPack = new FileStream(currentFile, FileMode.Open, FileAccess.Read))
+                                                    using (var fileToPack = new FileStream(currentFile + ".tmp", FileMode.Open, FileAccess.Read))
                                                     {
                                                         currentResStart = (uint)tmpDataStream.Length;
                                                         fileToPack.ExCopyTo(tmpDataStream, 0, currentResSize);
@@ -144,6 +144,8 @@ namespace TRBtool
                                                             }
                                                         }
                                                     }
+
+                                                    File.Delete(currentFile + ".tmp");
 
                                                     trbOffsetsWriter.BaseStream.Position = resOffsetWritePos;
                                                     trbOffsetsWriter.WriteBytesUInt32(currentResStart, false);
@@ -227,11 +229,12 @@ namespace TRBtool
 
             using (var finalTRBstream = new FileStream(outTRBfile, FileMode.Append, FileAccess.Write))
             {
-                using (var updTRBoffsetsStream = new FileStream(trbOffsetsFile, FileMode.Open, FileAccess.Read))
+                using (var updTRBoffsetsStream = new FileStream(trbOffsetsFileTmp, FileMode.Open, FileAccess.Read))
                 {
                     updTRBoffsetsStream.Seek(0, SeekOrigin.Begin);
                     updTRBoffsetsStream.CopyTo(finalTRBstream);
                 }
+                File.Delete(trbOffsetsFileTmp);
 
                 using (var trbDataStream = new FileStream(tmpDataFile, FileMode.Open, FileAccess.Read))
                 {
@@ -267,6 +270,15 @@ namespace TRBtool
             if (!File.Exists(fileToCheck))
             {
                 CmnMethods.ErrorExit(errorMsg);
+            }
+        }
+
+
+        static void IfFileExistsDel(string fileToDelete)
+        {
+            if (File.Exists(fileToDelete))
+            {
+                File.Delete(fileToDelete);
             }
         }
     }

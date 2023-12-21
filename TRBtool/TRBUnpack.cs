@@ -117,7 +117,7 @@ namespace TRBtool
 
                         Console.WriteLine("Unpacked " + extractFilePath);
 
-                        if (IMGBVariables.ImgHeaderBlockFileExtensions.Contains(currentResourceType))
+                        if (IMGBVariables.ImgHeaderBlockExtns.Contains(currentResourceType))
                         {
                             if (File.Exists(inTRBimgbFile))
                             {
