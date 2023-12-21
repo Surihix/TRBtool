@@ -10,3 +10,12 @@ Commandline usage examples:
 <br>``TRBtool.exe -r "_c201.win32.trb" ``
 
 Note: For the ``-r`` switch, the unpacked TRB folder name is specified in the example. the ``_`` in the name indicates the name of the unpacked folder.
+
+### Important
+- Xbox 360 version images will not unpack correctly due to swizzled storage of the image data.
+- Repacking is supported only for the PC version TRB IMGB files.
+
+## For Developers
+- This tool makes use of this following reference library:
+<br>**IMGBlibrary** - https://github.com/Surihix/IMGBlibrary
+- Refer to this [page](https://github.com/LR-Research-Team/Datalog/wiki/TRB) for information about the the TRB's file structure.
