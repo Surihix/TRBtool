@@ -12,7 +12,7 @@ Commandline usage examples:
 Note: For the ``-r`` switch, the unpacked TRB folder name is specified in the example. the ``_`` in the name indicates the name of the unpacked folder.
 
 ### Important
-- Xbox 360 version images will not unpack correctly due to swizzled storage of the image data.
+- Xbox 360 version image files will not unpack correctly due to swizzling.
 - Repacking is supported only for the PC version TRB IMGB files.
 
 ## For Developers
