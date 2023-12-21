@@ -1,4 +1,6 @@
-# Instructions
+# TRBtool
+This tool allows you to unpack and repack the TRB IMGB files from the FINAL FANTASY XIII trilogy.
+
 The program should be launched from command prompt with any one of these following argument switches along with the input file:
 <br>``-u`` Unpacks the TRB file
 <br>``-r`` Repacks the unpacked TRB folder to a TRB file
