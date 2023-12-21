@@ -10,7 +10,9 @@ namespace TRBtool
         {
             if (args.Length < 2)
             {
-                CmnMethods.ErrorExit("Error: Enough arguments not specified\nMust be: TRBtool.exe '-u' or '-r' and 'TRB file or unpacked TRB folder'.");
+                CmnMethods.ErrorExit("Error: Enough arguments not specified\n\nExamples:" +
+                    "\nFor Unpacking: TRBtool.exe -u \"TRB file\" " +
+                    "\nFor Repacking: TRBtool.exe -r \"unpacked TRB folder\"");
             }
 
             var toolAction = args[0].Replace("-", "");
@@ -49,7 +51,7 @@ namespace TRBtool
                 }
                 else
                 {
-                    CmnMethods.ErrorExit("Error: Proper tool action is not specified\nMust be '-u' for unpacking or '-r' for repacking.");
+                    CmnMethods.ErrorExit("Error: Proper tool action is not specified\nMust be -u for unpacking or -r for repacking.");
                 }
 
                 switch (convertedToolAction)
