@@ -10,7 +10,7 @@ namespace TRBtool
         {
             if (args.Length < 2)
             {
-                CmnMethods.ErrorExit("Error: Enough arguments not specified\n\nExamples:" +
+                CmnMethods.ErrorExit("Error: Enough arguments not specified\n" +
                     "\nFor Unpacking: TRBtool.exe -u \"TRB file\" " +
                     "\nFor Repacking: TRBtool.exe -r \"unpacked TRB folder\"");
             }
