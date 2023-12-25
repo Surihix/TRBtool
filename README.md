@@ -13,6 +13,7 @@ Note: For the ``-r`` switch, the unpacked TRB folder name is specified in the ex
 
 ### Important
 - Repacking is supported only for the PC version TRB IMGB files.
+- If you are replacing DDS images, then make sure that the DDS compression/Pixel format used in your image file is the same as what it was in the original file.
 - The Xbox 360 version image data is swizzled. due to this swizzled format, this tool will not unpack them correctly.
 
 ## For Developers
