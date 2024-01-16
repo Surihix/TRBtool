@@ -260,8 +260,7 @@ namespace TRBtool
             Console.WriteLine("");
             Console.WriteLine("");
 
-            Console.WriteLine("Finished Repacking " + Path.GetFileName(outTRBfile));
-            Console.ReadLine();
+            Console.WriteLine("Finished repacking files to " + "\"" + Path.GetFileName(outTRBfile) + "\"");
         }
 
 

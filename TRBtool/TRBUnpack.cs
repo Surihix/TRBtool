@@ -153,8 +153,7 @@ namespace TRBtool
 
 
             Console.WriteLine("");
-            Console.WriteLine("Finished unpacking " + Path.GetFileName(inTRBfile));
-            Console.ReadLine();
+            Console.WriteLine("Finished unpacking file " + "\"" + Path.GetFileName(inTRBfile) + "\"");
         }
 
 
