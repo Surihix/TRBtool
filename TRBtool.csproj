@@ -46,18 +46,18 @@
   <ItemGroup>
     <Compile Include="TRBtool\SupportClasses\ReaderHelpers.cs" />
     <Compile Include="TRBtool\SupportClasses\StreamExtension.cs" />
-    <Compile Include="TRBtool\TRBRepack.cs" />
+    <Compile Include="TRBtool\TRBProcess2.cs" />
     <Compile Include="TRBtool\Core.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TRBtool\CmnMethods.cs" />
     <Compile Include="TRBtool\SupportClasses\WriterHelpers.cs" />
-    <Compile Include="TRBtool\TRBUnpack.cs" />
+    <Compile Include="TRBtool\TRBProcess1.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IMGBlibrary\IMGBlibrary.csproj">
+    <ProjectReference Include="..\dll libraries\IMGBlibrary\IMGBlibrary.csproj">
       <Project>{9bb17bc3-7183-4ece-92a2-30616edf4754}</Project>
       <Name>IMGBlibrary</Name>
     </ProjectReference>
