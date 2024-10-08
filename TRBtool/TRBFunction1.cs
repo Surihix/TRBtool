@@ -1,10 +1,7 @@
-﻿using BinaryReaderEx;
-using IMGBlibrary;
-using StreamExtension;
+﻿using IMGBlibrary.Support;
+using IMGBlibrary.Unpack;
 using System;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace TRBtool
 {
@@ -13,7 +10,19 @@ namespace TRBtool
         public static void UnpackTRB(string inTRBfile)
         {
             var inTRBfileDir = Path.GetDirectoryName(inTRBfile);
-            var extractTRBdir = Path.Combine(inTRBfileDir, "_" + Path.GetFileName(inTRBfile));
+            var inTRBfileName = Path.GetFileName(inTRBfile);
+            var extractTRBdir = Path.Combine(inTRBfileDir, "_" + inTRBfileName);
+
+            var platform = IMGBEnums.Platforms.win32;
+
+            if (inTRBfileName.EndsWith("ps3.trb"))
+            {
+                platform = IMGBEnums.Platforms.ps3;
+            }
+            else if (inTRBfileName.EndsWith("x360.trb"))
+            {
+                platform = IMGBEnums.Platforms.x360;
+            }
 
             DeleteDirIfExists(extractTRBdir);
 
@@ -34,12 +43,11 @@ namespace TRBtool
                 using (var trbReader = new BinaryReader(trbStream))
                 {
                     trbReader.BaseStream.Position = 0;
-                    var trbChars = trbReader.ReadBytes(8);
-                    var trbHeader = Encoding.ASCII.GetString(trbChars).Replace("\0", "");
+                    var trbHeader = trbReader.ReadBytesString(8, false);
 
-                    if (!trbHeader.Equals("SEDBRES "))
+                    if (trbHeader != "SEDBRES ")
                     {
-                        CmnMethods.ErrorExit("Error: Not a valid TRB file");
+                        SharedMethods.ErrorExit("Error: Not a valid TRB file");
                     }
 
                     var trbSize = (uint)trbStream.Length;
@@ -47,12 +55,10 @@ namespace TRBtool
                     trbReader.BaseStream.Position = 52;
                     var resourceIdsPathsStart = trbReader.ReadUInt32();
                     var resourceCount = trbReader.ReadUInt32();
-                    var resourceDataStart = 64 + (resourceCount * 16);
-
-                    var resourceBeforeTypeIndex = resourceCount - 2;
+                    var dataStart = 64 + (resourceCount * 16);
                     var resourceTypeIndex = resourceCount - 1;
 
-                    trbReader.BaseStream.Position = 64 + (resourceBeforeTypeIndex * 16) + 4;
+                    trbReader.BaseStream.Position = 64 + ((resourceCount - 2) * 16) + 4;
                     var resourceTypeStart = trbReader.ReadUInt32();
 
                     trbReader.BaseStream.Position = 64 + (resourceTypeIndex * 16) + 4;
@@ -60,51 +66,48 @@ namespace TRBtool
 
 
                     uint resourceOffsetReadPos = 68;
-                    var resourceIdsPathsReadPos = resourceDataStart + resourceIdsPathsStart;
-                    var resourceTypeReadPos = resourceDataStart + resourceTypeStart;
-                    var trbRresourceIndex = 1;
+                    var resourceIdsPathsReadPos = dataStart + resourceIdsPathsStart;
+                    var resourceTypeReadPos = dataStart + resourceTypeStart;
 
+                    var currentResourceIdPath = string.Empty;
+                    var currentResourceType = string.Empty;
                     uint currentResourceStart = 0;
                     uint currentResourceSize = 0;
 
-                    while (trbRresourceIndex <= resourceCount)
+                    for (int i = 1; i < resourceCount + 1; i++)
                     {
                         trbReader.BaseStream.Position = resourceIdsPathsReadPos;
-                        var currentResourceIdPath = trbReader.ReadStringTillNull();
-                        var nextResourceIdPathStart = (uint)trbReader.BaseStream.Position;
+                        currentResourceIdPath = trbReader.ReadStringTillNull();
+                        resourceIdsPathsReadPos = (uint)trbReader.BaseStream.Position;
 
-                        var currentResourceType = "";
-                        if (trbRresourceIndex >= resourceTypeIndex)
-                        {
-                            if (trbRresourceIndex == resourceTypeIndex)
-                            {
-                                trbReader.BaseStream.Position = resourceOffsetReadPos;
-                                currentResourceStart = trbReader.ReadUInt32() + resourceDataStart;
-                                currentResourceSize = (resourceIdsStart + resourceDataStart) - currentResourceStart;
-                            }
-
-                            if (trbRresourceIndex > resourceTypeIndex)
-                            {
-                                trbReader.BaseStream.Position = resourceOffsetReadPos;
-                                currentResourceStart = trbReader.ReadUInt32() + resourceDataStart;
-                                currentResourceSize = trbSize - currentResourceStart;
-                            }
-                        }
-                        else
+                        if (i < resourceTypeIndex)
                         {
                             trbReader.BaseStream.Position = resourceOffsetReadPos;
-                            currentResourceStart = trbReader.ReadUInt32() + resourceDataStart;
+                            currentResourceStart = trbReader.ReadUInt32() + dataStart;
                             currentResourceSize = trbReader.ReadUInt32();
 
                             trbReader.BaseStream.Position = resourceTypeReadPos;
-                            var resourceTypeByteArray = trbReader.ReadBytes(4);
-                            Array.Reverse(resourceTypeByteArray);
-                            currentResourceType = "." + Encoding.ASCII.GetString(resourceTypeByteArray).Replace("\0", "");
+                            currentResourceType = trbReader.ReadBytesString(4, true);
+                        }
+                        else
+                        {
+                            if (i == resourceTypeIndex)
+                            {
+                                trbReader.BaseStream.Position = resourceOffsetReadPos;
+                                currentResourceStart = trbReader.ReadUInt32() + dataStart;
+                                currentResourceSize = (resourceIdsStart + dataStart) - currentResourceStart;
+                            }
+                            else
+                            {
+                                trbReader.BaseStream.Position = resourceOffsetReadPos;
+                                currentResourceStart = trbReader.ReadUInt32() + dataStart;
+                                currentResourceSize = (uint)trbStream.Length - currentResourceStart;
+                            }
                         }
 
-                        var extractFilePath = Path.Combine(extractTRBdir, currentResourceIdPath + currentResourceType);
-
+                        var extractFilePath = Path.Combine(extractTRBdir, currentResourceIdPath + "." + currentResourceType);
                         var currentFileDir = Path.GetDirectoryName(extractFilePath);
+
                         if (!Directory.Exists(currentFileDir))
                         {
                             Directory.CreateDirectory(currentFileDir);
@@ -112,12 +115,13 @@ namespace TRBtool
 
                         using (var ofs = new FileStream(extractFilePath, FileMode.OpenOrCreate, FileAccess.Write))
                         {
-                            trbStream.ExCopyTo(ofs, currentResourceStart, currentResourceSize);
+                            trbStream.Position = currentResourceStart;
+                            trbStream.CopyStreamTo(ofs, currentResourceSize, false);
                         }
 
                         Console.WriteLine("Unpacked " + extractFilePath);
 
-                        if (IMGBVariables.ImgHeaderBlockExtns.Contains(currentResourceType))
+                        if (Enum.TryParse(currentResourceType, false, out IMGBEnums.FileExtensions fileExtension) == true)
                         {
                             if (File.Exists(inTRBimgbFile))
                             {
@@ -127,23 +131,25 @@ namespace TRBtool
                                 }
 
                                 Console.WriteLine("Detected Image header file");
-                                IMGBUnpack.UnpackIMGB(extractFilePath, inTRBimgbFile, extractIMGBdir);
+                                IMGBUnpack.UnpackIMGB(extractFilePath, inTRBimgbFile, extractIMGBdir, platform, true);
                             }
                         }
 
                         Console.WriteLine("");
 
                         resourceOffsetReadPos += 16;
-                        resourceIdsPathsReadPos = nextResourceIdPathStart;
                         resourceTypeReadPos += 4;
-                        trbRresourceIndex++;
+                        currentResourceIdPath = string.Empty;
+                        currentResourceType = string.Empty;
                     }
 
-                    var trbOffsetsFile = Path.Combine(extractTRBdir, CmnMethods.TRBOffsetsFile);
+
+                    var trbOffsetsFile = Path.Combine(extractTRBdir, SharedMethods.TRBOffsetsFile);
 
                     using (var trbOffsets = new FileStream(trbOffsetsFile, FileMode.OpenOrCreate, FileAccess.Write))
                     {
-                        trbStream.ExCopyTo(trbOffsets, 0, resourceDataStart);
+                        trbStream.Position = 0;
+                        trbStream.CopyStreamTo(trbOffsets, dataStart, false);
                     }
 
                     Console.WriteLine("Copied resource offsets to '" + trbOffsetsFile + "'");
@@ -151,13 +157,12 @@ namespace TRBtool
                 }
             }
 
-
             Console.WriteLine("");
             Console.WriteLine("Finished unpacking file " + "\"" + Path.GetFileName(inTRBfile) + "\"");
         }
 
 
-        static void DeleteDirIfExists(string directoryName)
+        private static void DeleteDirIfExists(string directoryName)
         {
             if (Directory.Exists(directoryName))
             {

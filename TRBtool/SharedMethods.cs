@@ -1,9 +1,8 @@
 ﻿using System;
-using System.IO;
 
 namespace TRBtool
 {
-    internal class CmnMethods
+    internal class SharedMethods
     {
         public static void ErrorExit(string errorMsg)
         {
@@ -12,6 +11,6 @@ namespace TRBtool
             Environment.Exit(0);
         }
 
-        public static string TRBOffsetsFile = "SEDBRES_OFFSETS";
+        public static readonly string TRBOffsetsFile = "SEDBRES_OFFSETS";
     }
 }

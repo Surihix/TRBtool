@@ -44,14 +44,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TRBtool\SupportClasses\ReaderHelpers.cs" />
-    <Compile Include="TRBtool\SupportClasses\StreamExtension.cs" />
-    <Compile Include="TRBtool\TRBProcess2.cs" />
+    <Compile Include="TRBtool\Extensions\BinaryReaderHelpers.cs" />
+    <Compile Include="TRBtool\Extensions\BinaryWriterHelpers.cs" />
+    <Compile Include="TRBtool\Extensions\StreamHelpers.cs" />
+    <Compile Include="TRBtool\TRBFunction2.cs" />
     <Compile Include="TRBtool\Core.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TRBtool\CmnMethods.cs" />
-    <Compile Include="TRBtool\SupportClasses\WriterHelpers.cs" />
-    <Compile Include="TRBtool\TRBProcess1.cs" />
+    <Compile Include="TRBtool\SharedMethods.cs" />
+    <Compile Include="TRBtool\TRBFunction1.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -62,5 +62,6 @@
       <Name>IMGBlibrary</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
