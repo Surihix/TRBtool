@@ -57,7 +57,8 @@ namespace TRBtool
                         {
                             SharedMethods.ErrorExit("Error: Specified TRB file does not exist.");
                         }
-                        TRB.UnpackTRB(args[1]);
+                        //TRB.UnpackTRB(args[1]);
+                        TRBtool.TRB.UnpackTRB(args[1]);
                         break;
 
                     case ToolActions.r:

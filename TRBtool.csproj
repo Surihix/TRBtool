@@ -47,6 +47,7 @@
     <Compile Include="TRBtool\Extensions\BinaryReaderHelpers.cs" />
     <Compile Include="TRBtool\Extensions\BinaryWriterHelpers.cs" />
     <Compile Include="TRBtool\Extensions\StreamHelpers.cs" />
+    <Compile Include="TRBtool\TRB.cs" />
     <Compile Include="TRBtool\TRBFunction2.cs" />
     <Compile Include="TRBtool\Core.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
