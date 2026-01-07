@@ -50,7 +50,7 @@ namespace TRBtool.TRBtool
 
                 var version = trbReader.ReadUInt32();
                 var endiannessFlag = trbReader.ReadByte();
-                var trbType = trbReader.ReadByte();
+                var mainType = trbReader.ReadByte();
                 var headerSize = trbReader.ReadUInt16();
                 var trbDataSize = trbReader.ReadUInt32();
 
@@ -188,6 +188,9 @@ namespace TRBtool.TRBtool
 
                 using (var resourceInfoStream = new StreamWriter(Path.Combine(extractTRBdir, "RESOURCE_INFO.txt"), true))
                 {
+                    resourceInfoStream.WriteLine($"Version = {version}");
+                    resourceInfoStream.WriteLine($"MainType = {mainType}");
+
                     foreach (var item in resInfoBuffer)
                     {
                         resourceInfoStream.WriteLine($"Index = {item.Item1} | Type = {item.Item2}");
