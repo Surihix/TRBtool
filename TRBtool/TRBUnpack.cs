@@ -2,28 +2,19 @@
 using IMGBlibrary.Unpack;
 using System;
 using System.IO;
+using TRBtool.Support;
 
-namespace TRBtool.TRBtool
+namespace TRBtool
 {
-    internal class TRB
+    internal class TRBUnpack
     {
-        #region Unpack TRB
-        public static void UnpackTRB(string inTRBfile)
+        public static void InitiateUnpack(string inTRBfile)
         {
             var inTRBfileDir = Path.GetDirectoryName(inTRBfile);
             var inTRBfileName = Path.GetFileName(inTRBfile);
             var extractTRBdir = Path.Combine(inTRBfileDir, "_" + inTRBfileName);
 
-            var platform = IMGBEnums.Platforms.win32;
-
-            if (inTRBfileName.EndsWith("ps3.trb"))
-            {
-                platform = IMGBEnums.Platforms.ps3;
-            }
-            else if (inTRBfileName.EndsWith("x360.trb"))
-            {
-                platform = IMGBEnums.Platforms.x360;
-            }
+            var platform = TRBMethods.GetPlatform(inTRBfileName);
 
             DeleteDirIfExists(extractTRBdir);
 
@@ -38,6 +29,8 @@ namespace TRBtool.TRBtool
 
             Console.WriteLine("");
 
+            var trb = new TRB();
+
             using (var trbReader = new BinaryReader(new FileStream(inTRBfile, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 // Parse header
@@ -45,7 +38,7 @@ namespace TRBtool.TRBtool
 
                 if (sedbResMagic != "SEDBRES ")
                 {
-                    SharedMethods.ErrorExit("Error: Not a valid TRB file");
+                    TRBMethods.ErrorExit("Error: Not a valid TRB file");
                 }
 
                 var version = trbReader.ReadUInt32();
@@ -59,6 +52,10 @@ namespace TRBtool.TRBtool
                 var resourceIDsOffset = trbReader.ReadUInt32();
                 var resourceCount2 = trbReader.ReadUInt32();
                 var trbExtn = trbReader.ReadBytesString(4, true);
+
+                trb.Version = version;
+                trb.MainType = mainType;
+                trb.ResourceCount = resourceCount;
 
                 var resourceInfoTableSize = resourceCount * 16;
 
@@ -78,7 +75,7 @@ namespace TRBtool.TRBtool
 
                 var resourceTypesBuffer = new string[(int)resourceCount];
                 _ = trbReader.BaseStream.Position = (headerSize + resourceInfoTableSize) - 28;
-                
+
                 var resourceTypeSectionOffset = trbReader.ReadUInt32();
                 _ = trbReader.BaseStream.Position = (headerSize + resourceInfoTableSize) + resourceTypeSectionOffset;
 
@@ -118,14 +115,23 @@ namespace TRBtool.TRBtool
                         Directory.CreateDirectory(currentFileDir);
                     }
 
+                    TRBMethods.IfFileExistsDel(currentFile);
+
                     _ = trbReader.BaseStream.Position = offsetAdjust + resourceDataOffset;
 
-                    if (currentResourceId == "RESOURCE_TYPE")
+                    if (currentResourceId == TRBMethods.TRBResourceTypeFile)
                     {
-                        using (var resTypeStreamWriter = new StreamWriter(currentFile + "txt", true, System.Text.Encoding.UTF8))
+                        currentFile = currentFile + "txt";
+
+                        using (var resTypeStreamWriter = new StreamWriter(currentFile, true, System.Text.Encoding.ASCII))
                         {
                             foreach (var item in resourceTypesBuffer)
                             {
+                                if (string.IsNullOrEmpty(item))
+                                {
+                                    continue;
+                                }
+
                                 resTypeStreamWriter.WriteLine(item);
                             }
                         }
@@ -134,9 +140,11 @@ namespace TRBtool.TRBtool
                         continue;
                     }
 
-                    if (currentResourceId == "RESOURCE_ID")
+                    if (currentResourceId == TRBMethods.TRBResourceIDFile)
                     {
-                        using (var resIDsStreamWriter = new StreamWriter(currentFile + "txt", true, System.Text.Encoding.UTF8))
+                        currentFile = currentFile + "txt";
+
+                        using (var resIDsStreamWriter = new StreamWriter(currentFile, true, System.Text.Encoding.ASCII))
                         {
                             for (int j = 0; j < resourceCount; j++)
                             {
@@ -144,7 +152,7 @@ namespace TRBtool.TRBtool
 
                                 if (string.IsNullOrEmpty(resourceIDread))
                                 {
-                                    resIDsStreamWriter.WriteLine("null");
+                                    resIDsStreamWriter.WriteLine("|-null-|");
                                     continue;
                                 }
 
@@ -168,7 +176,7 @@ namespace TRBtool.TRBtool
 
                     Console.WriteLine("Unpacked " + currentFile);
 
-                    if (Enum.TryParse(currentResourceType, false, out IMGBEnums.FileExtensions fileExtension) == true)
+                    if (Enum.TryParse(currentResourceType, false, out IMGBFlags.FileExtensions fileExtension) == true)
                     {
                         if (File.Exists(inTRBimgbFile))
                         {
@@ -186,17 +194,26 @@ namespace TRBtool.TRBtool
                     lastInfoPos += 16;
                 }
 
-                using (var resourceInfoStream = new StreamWriter(Path.Combine(extractTRBdir, "RESOURCE_INFO.txt"), true))
-                {
-                    resourceInfoStream.WriteLine($"Version = {version}");
-                    resourceInfoStream.WriteLine($"MainType = {mainType}");
+                trb.ResourceInfo = resInfoBuffer;
+            }
 
-                    foreach (var item in resInfoBuffer)
-                    {
-                        resourceInfoStream.WriteLine($"Index = {item.Item1} | Type = {item.Item2}");
-                    }
+            var resInfoTxt = Path.Combine(extractTRBdir, $"{TRBMethods.TRBResourceInfoFile}.txt");
+
+            TRBMethods.IfFileExistsDel(resInfoTxt);
+
+            using (var resourceInfoStream = new StreamWriter(resInfoTxt, true))
+            {
+                resourceInfoStream.WriteLine($"Version = {trb.Version}");
+                resourceInfoStream.WriteLine($"MainType = {trb.MainType}");
+
+                foreach (var item in trb.ResourceInfo)
+                {
+                    resourceInfoStream.WriteLine($"Index = {item.Item1} | Type = {item.Item2}");
                 }
             }
+
+            Console.WriteLine("");
+            Console.WriteLine("Finished unpacking file " + "\"" + Path.GetFileName(inTRBfile) + "\"");
         }
 
         private static void DeleteDirIfExists(string directoryName)
@@ -206,14 +223,5 @@ namespace TRBtool.TRBtool
                 Directory.Delete(directoryName, true);
             }
         }
-        #endregion
-
-
-        #region Repack TRB
-        public static void RepackTRB(string inExtractedTRBdir)
-        {
-
-        }
-        #endregion
     }
 }

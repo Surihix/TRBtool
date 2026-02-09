@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography;
+using TRBtool.Support;
 
 namespace TRBtool
 {
@@ -12,7 +13,7 @@ namespace TRBtool
 
             if (args.Length < 2)
             {
-                SharedMethods.ErrorExit("Error: Enough arguments not specified\n" +
+                TRBMethods.ErrorExit("Error: Enough arguments not specified\n" +
                     "\nFor Unpacking: TRBtool.exe -u \"TRB file\" " +
                     "\nFor Repacking: TRBtool.exe -r \"unpacked TRB folder\"");
             }
@@ -29,16 +30,16 @@ namespace TRBtool
                         var hashArray = dllHash.ComputeHash(dllStream);
                         var computedHash = BitConverter.ToString(hashArray).Replace("-", "").ToLower();
 
-                        if (!computedHash.Equals("76899bd608be7e7af7d740ff90e06cdca0a88c8108b9bb1b49597610913eb7b3"))
+                        if (!computedHash.Equals(""))
                         {
-                            SharedMethods.ErrorExit("Error: 'IMGBlibrary.dll' file is corrupt. please check if the dll file is valid.");
+                            TRBMethods.ErrorExit("Error: 'IMGBlibrary.dll' file is corrupt. please check if the dll file is valid.");
                         }
                     }
                 }
             }
             else
             {
-                SharedMethods.ErrorExit("Error: Missing 'IMGBlibrary.dll' file. please ensure that the dll file exists next to the program.");
+                TRBMethods.ErrorExit("Error: Missing 'IMGBlibrary.dll' file. please ensure that the dll file exists next to the program.");
             }
             #endif
 
@@ -47,7 +48,7 @@ namespace TRBtool
             {
                 if (Enum.TryParse(args[0].Replace("-", ""), false, out ToolActions toolAction) == false)
                 {
-                    SharedMethods.ErrorExit("Error: Proper tool action is not specified\nMust be '-u' for unpacking or '-r' for repacking.");
+                    TRBMethods.ErrorExit("Error: Proper tool action is not specified\nMust be '-u' for unpacking or '-r' for repacking.");
                 }
 
                 switch (toolAction)
@@ -55,24 +56,23 @@ namespace TRBtool
                     case ToolActions.u:
                         if (!File.Exists(args[1]))
                         {
-                            SharedMethods.ErrorExit("Error: Specified TRB file does not exist.");
+                            TRBMethods.ErrorExit("Error: Specified TRB file does not exist.");
                         }
-                        //TRB.UnpackTRB(args[1]);
-                        TRBtool.TRB.UnpackTRB(args[1]);
+                        TRBUnpack.InitiateUnpack(args[1]);
                         break;
 
                     case ToolActions.r:
                         if (!Directory.Exists(args[1]))
                         {
-                            SharedMethods.ErrorExit("Error: Specified unpacked directory to repack, does not exist.");
+                            TRBMethods.ErrorExit("Error: Specified unpacked directory to repack, does not exist.");
                         }
-                        TRB.RepackTRB(args[1]);
+                        TRBRepack.InitiateRepack(args[1]);
                         break;
                 }
             }
             catch (Exception ex)
             {
-                SharedMethods.ErrorExit("" + ex);
+                TRBMethods.ErrorExit("" + ex);
             }
         }
 
