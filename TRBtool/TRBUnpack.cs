@@ -121,7 +121,7 @@ namespace TRBtool
 
                     if (currentResourceId == TRBMethods.TRBResourceTypeFile)
                     {
-                        currentFile = currentFile + "txt";
+                        currentFile += "txt";
 
                         using (var resTypeStreamWriter = new StreamWriter(currentFile, true, System.Text.Encoding.ASCII))
                         {
@@ -142,7 +142,7 @@ namespace TRBtool
 
                     if (currentResourceId == TRBMethods.TRBResourceIDFile)
                     {
-                        currentFile = currentFile + "txt";
+                        currentFile += "txt";
 
                         using (var resIDsStreamWriter = new StreamWriter(currentFile, true, System.Text.Encoding.ASCII))
                         {
