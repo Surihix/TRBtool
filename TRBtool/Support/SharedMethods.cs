@@ -4,15 +4,15 @@ using System.IO;
 
 namespace TRBtool.Support
 {
-    internal class TRBMethods
+    internal class SharedMethods
     {
-        public static string TRBOffsetsFile = "SEDBRES_OFFSETS";
+        public static string TRBOffsetsFileString = "SEDBRES_OFFSETS";
 
-        public static string TRBResourceInfoFile = "RESOURCE_INFO";
+        public static string TRBResourceInfoFileString = "RESOURCE_INFO";
 
-        public static string TRBResourceTypeFile = "RESOURCE_TYPE";
+        public static string TRBResourceTypeString = "RESOURCE_TYPE";
 
-        public static string TRBResourceIDFile = "RESOURCE_ID";
+        public static string TRBResourceIDString = "RESOURCE_ID";
 
         public static void ErrorExit(string errorMsg)
         {

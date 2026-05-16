@@ -21,14 +21,14 @@ namespace TRBtool
             var outTRBfileDir = Path.GetDirectoryName(inExtractedTRBdir);
             var outTRBfile = Path.Combine(outTRBfileDir, outTRBfileName);
 
-            var resourceInfoTxtFile = Path.Combine(inExtractedTRBdir, $"{TRBMethods.TRBResourceInfoFile}.txt");
-            var resourceTypeTxtFile = Path.Combine(inExtractedTRBdir, $"{TRBMethods.TRBResourceTypeFile}.txt");
-            var resourceIdTxtFile = Path.Combine(inExtractedTRBdir, $"{TRBMethods.TRBResourceIDFile}.txt");
+            var resourceInfoTxtFile = Path.Combine(inExtractedTRBdir, $"{SharedMethods.TRBResourceInfoFileString}.txt");
+            var resourceTypeTxtFile = Path.Combine(inExtractedTRBdir, $"{SharedMethods.TRBResourceTypeString}.txt");
+            var resourceIdTxtFile = Path.Combine(inExtractedTRBdir, $"{SharedMethods.TRBResourceIDString}.txt");
             var tmpDataFile = Path.Combine(inExtractedTRBdir, "_tempData");
 
-            TRBRepackHelpers.CheckFileExists(resourceInfoTxtFile, $"Error: Missing file '{TRBMethods.TRBResourceInfoFile}.txt' in the extracted directory.");
-            TRBRepackHelpers.CheckFileExists(resourceTypeTxtFile, $"Error: Missing file '{TRBMethods.TRBResourceTypeFile}.txt' in the extracted directory.");
-            TRBRepackHelpers.CheckFileExists(resourceIdTxtFile, $"Error: Missing file '{TRBMethods.TRBResourceIDFile}.txt' in the extracted directory.");
+            TRBRepackHelpers.CheckFileExists(resourceInfoTxtFile, $"Error: Missing file '{SharedMethods.TRBResourceInfoFileString}.txt' in the extracted directory.");
+            TRBRepackHelpers.CheckFileExists(resourceTypeTxtFile, $"Error: Missing file '{SharedMethods.TRBResourceTypeString}.txt' in the extracted directory.");
+            TRBRepackHelpers.CheckFileExists(resourceIdTxtFile, $"Error: Missing file '{SharedMethods.TRBResourceIDString}.txt' in the extracted directory.");
 
             var outIMGBfileName = Path.GetFileNameWithoutExtension(outTRBfileName) + ".imgb";
             var outIMGBfile = Path.Combine(outTRBfileDir, outIMGBfileName);
@@ -37,8 +37,8 @@ namespace TRBtool
             var oldTRBfile = Path.Combine(outTRBfileDir, Path.GetFileName(outTRBfile) + ".old");
             var oldIMGBfile = Path.Combine(outTRBfileDir, Path.GetFileName(outIMGBfile) + ".old");
 
-            TRBMethods.IfFileExistsDel(oldTRBfile);
-            TRBMethods.IfFileExistsDel(oldIMGBfile);
+            SharedMethods.IfFileExistsDel(oldTRBfile);
+            SharedMethods.IfFileExistsDel(oldIMGBfile);
 
             if (File.Exists(outTRBfile))
             {
@@ -49,7 +49,7 @@ namespace TRBtool
                 File.Move(outIMGBfile, oldIMGBfile);
             }
 
-            var platform = TRBMethods.GetPlatform(outTRBfileName);
+            var platform = SharedMethods.GetPlatform(outTRBfileName);
 
             Console.WriteLine("");
 
@@ -99,7 +99,7 @@ namespace TRBtool
 
                         var currentFile = Path.Combine(inExtractedTRBdir, $"{currentID}.{currentType}");
 
-                        if (currentID == TRBMethods.TRBResourceTypeFile)
+                        if (currentID == SharedMethods.TRBResourceTypeString)
                         {
                             var resourceTypeData = TRBRepackHelpers.BuildResourceType(resourceTypelist);
                             mainDataStream.Write(resourceTypeData, 0, resourceTypeData.Length);
@@ -114,7 +114,7 @@ namespace TRBtool
                             continue;
                         }
 
-                        if (currentID == TRBMethods.TRBResourceIDFile)
+                        if (currentID == SharedMethods.TRBResourceIDString)
                         {
                             var resourceIDData = TRBRepackHelpers.BuildResourceID(resourceIDList, trb.ResourceCount);
                             mainDataStream.Write(resourceIDData, 0, resourceIDData.Length);
@@ -138,7 +138,7 @@ namespace TRBtool
                         }
 
                         var currentFileOG = currentFile + ".og";
-                        TRBMethods.IfFileExistsDel(currentFileOG);
+                        SharedMethods.IfFileExistsDel(currentFileOG);
 
                         File.Move(currentFile, currentFileOG);
                         File.Copy(currentFileOG, currentFile);
@@ -184,7 +184,7 @@ namespace TRBtool
                 finalTRBstream.Write(tmpData, 0, tmpData.Length);
             }
 
-            TRBMethods.IfFileExistsDel(tmpDataFile);
+            SharedMethods.IfFileExistsDel(tmpDataFile);
 
             Console.WriteLine("Assembled final TRB file");
             Console.WriteLine("");

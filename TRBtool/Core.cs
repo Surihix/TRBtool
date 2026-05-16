@@ -2,6 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 using TRBtool.Support;
+using TRBtool.Unpack;
 
 namespace TRBtool
 {
@@ -13,7 +14,7 @@ namespace TRBtool
 
             if (args.Length < 2)
             {
-                TRBMethods.ErrorExit("Error: Enough arguments not specified\n" +
+                SharedMethods.ErrorExit("Error: Enough arguments not specified\n" +
                     "\nFor Unpacking: TRBtool.exe -u \"TRB file\" " +
                     "\nFor Repacking: TRBtool.exe -r \"unpacked TRB folder\"");
             }
@@ -48,7 +49,7 @@ namespace TRBtool
             {
                 if (Enum.TryParse(args[0].Replace("-", ""), false, out ToolActions toolAction) == false)
                 {
-                    TRBMethods.ErrorExit("Error: Proper tool action is not specified\nMust be '-u' for unpacking or '-r' for repacking.");
+                    SharedMethods.ErrorExit("Error: Proper tool action is not specified\nMust be '-u' for unpacking or '-r' for repacking.");
                 }
 
                 switch (toolAction)
@@ -56,7 +57,7 @@ namespace TRBtool
                     case ToolActions.u:
                         if (!File.Exists(args[1]))
                         {
-                            TRBMethods.ErrorExit("Error: Specified TRB file does not exist.");
+                            SharedMethods.ErrorExit("Error: Specified TRB file does not exist.");
                         }
                         TRBUnpack.InitiateUnpack(args[1]);
                         break;
@@ -64,7 +65,7 @@ namespace TRBtool
                     case ToolActions.r:
                         if (!Directory.Exists(args[1]))
                         {
-                            TRBMethods.ErrorExit("Error: Specified unpacked directory to repack, does not exist.");
+                            SharedMethods.ErrorExit("Error: Specified unpacked directory to repack, does not exist.");
                         }
                         TRBRepack.InitiateRepack(args[1]);
                         break;
@@ -72,7 +73,7 @@ namespace TRBtool
             }
             catch (Exception ex)
             {
-                TRBMethods.ErrorExit("" + ex);
+                SharedMethods.ErrorExit("" + ex);
             }
         }
 

@@ -27,12 +27,12 @@ namespace TRBtool
 
                         if (splitData.Length < 2)
                         {
-                            TRBMethods.ErrorExit($"Version info is not specified properly. occured at line {lineCounter}!");
+                            SharedMethods.ErrorExit($"Version info is not specified properly. occured at line {lineCounter}!");
                         }
 
                         if (!uint.TryParse(splitData[1].Trim(), out trb.Version))
                         {
-                            TRBMethods.ErrorExit($"Version id is not specified properly. occured at line {lineCounter}!");
+                            SharedMethods.ErrorExit($"Version id is not specified properly. occured at line {lineCounter}!");
                         }
 
                         lineCounter++;
@@ -45,12 +45,12 @@ namespace TRBtool
 
                         if (splitData.Length < 2)
                         {
-                            TRBMethods.ErrorExit($"MainType info is not specified properly. occured at line {lineCounter}!");
+                            SharedMethods.ErrorExit($"MainType info is not specified properly. occured at line {lineCounter}!");
                         }
 
                         if (!byte.TryParse(splitData[1].Trim(), out trb.MainType))
                         {
-                            TRBMethods.ErrorExit($"MainType id is not specified properly. occured at line {lineCounter}!");
+                            SharedMethods.ErrorExit($"MainType id is not specified properly. occured at line {lineCounter}!");
                         }
 
                         lineCounter++;
@@ -63,31 +63,31 @@ namespace TRBtool
 
                         if (mainSplitData.Length < 2)
                         {
-                            TRBMethods.ErrorExit($"Index and Type data is not specified properly. occured at line {lineCounter}!");
+                            SharedMethods.ErrorExit($"Index and Type data is not specified properly. occured at line {lineCounter}!");
                         }
 
                         var splitData = mainSplitData[0].Split('=');
 
                         if (splitData.Length < 2)
                         {
-                            TRBMethods.ErrorExit($"Index data is not specified properly. occured at line {lineCounter}!");
+                            SharedMethods.ErrorExit($"Index data is not specified properly. occured at line {lineCounter}!");
                         }
 
                         if (!uint.TryParse(splitData[1].Trim(), out uint currentIndex))
                         {
-                            TRBMethods.ErrorExit($"Index id is not specified properly. occured at line {lineCounter}!");
+                            SharedMethods.ErrorExit($"Index id is not specified properly. occured at line {lineCounter}!");
                         }
 
                         splitData = mainSplitData[1].Split('=');
 
                         if (splitData.Length < 2)
                         {
-                            TRBMethods.ErrorExit($"Type data is not specified properly. occured at line {lineCounter}!");
+                            SharedMethods.ErrorExit($"Type data is not specified properly. occured at line {lineCounter}!");
                         }
 
                         if (!uint.TryParse(splitData[1].Trim(), out uint currentType))
                         {
-                            TRBMethods.ErrorExit($"Index id is not specified properly. occured at line {lineCounter}!");
+                            SharedMethods.ErrorExit($"Index id is not specified properly. occured at line {lineCounter}!");
                         }
 
                         resInfoList.Add((currentIndex, currentType));
@@ -259,7 +259,7 @@ namespace TRBtool
         {
             if (!File.Exists(fileToCheck))
             {
-                TRBMethods.ErrorExit(errorMsg);
+                SharedMethods.ErrorExit(errorMsg);
             }
         }
     }
