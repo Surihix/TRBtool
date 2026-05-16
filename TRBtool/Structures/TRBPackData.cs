@@ -1,10 +1,9 @@
 ﻿namespace TRBtool.Structures
 {
-    internal class TRBLoadData
+    internal class TRBPackData
     {
         public TRBHeader Header;
         public TRBResourceInfoEntry[] ResourceInfoTable;
-        public long ResourcesDataStartOffset;
         public string[] ResourceIDTable;
         public string[] ResourceTypesTable;
     }

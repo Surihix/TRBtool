@@ -32,7 +32,7 @@ namespace TRBtool.Unpack
                 trbHeader.ResourceIDsCount = trbFileReader.ReadUInt32();
                 trbHeader.IDsStartOffset = trbFileReader.ReadUInt32();
                 trbHeader.ResourceCount = trbFileReader.ReadUInt32();
-                trbHeader.ExtensionLE = trbFileReader.ReadBytesString(4, true);
+                trbHeader.FileType = trbFileReader.ReadBytesString(4, true);
 
                 Console.WriteLine($"TRB Version: {trbHeader.Version}");
                 Console.WriteLine($"File Size: {trbHeader.FileSize}");

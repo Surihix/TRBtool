@@ -163,8 +163,7 @@ namespace TRBtool
                         File.Move(currentFileOG, currentFile);
 
                         TRBRepackHelpers.UpdateOffset(resInfoWriter, writePos, currentIndex, currentResourceOffset, currentResourceSize, currentTypeValue);
-
-                        TRBRepackHelpers.DoPadding(16, mainDataStream);
+                        mainDataStream.PadStream(16);
 
                         currentResourceOffset = (uint)mainDataStream.Position;
                         writePos += 16;

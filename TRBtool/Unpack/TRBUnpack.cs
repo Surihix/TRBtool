@@ -37,8 +37,6 @@ namespace TRBtool.Unpack
             var trbResourceIDTable = trbLoadData.ResourceIDTable;
             var trbResourceTypeTable = trbLoadData.ResourceTypeTable;
 
-            var trb = new TRB();
-
             using (var trbFileReader = new BinaryReader(new FileStream(inTRBfile, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 Console.WriteLine("Unpacking resources....");

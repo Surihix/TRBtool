@@ -12,6 +12,6 @@
         public uint ResourceIDsCount;
         public uint IDsStartOffset;
         public uint ResourceCount;
-        public string ExtensionLE;
+        public string FileType;
     }
 }

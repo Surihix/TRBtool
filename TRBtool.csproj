@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="TRBtool\Structures\TRBHeader.cs" />
     <Compile Include="TRBtool\Structures\TRBLoadData.cs" />
+    <Compile Include="TRBtool\Structures\TRBPackData.cs" />
     <Compile Include="TRBtool\Structures\TRBResourceInfoEntry.cs" />
     <Compile Include="TRBtool\TRBRepackHelpers.cs" />
     <Compile Include="TRBtool\Extensions\BinaryReaderHelpers.cs" />

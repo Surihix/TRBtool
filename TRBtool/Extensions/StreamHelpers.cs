@@ -1,26 +1,36 @@
 ﻿using System;
 using System.IO;
 
-internal static class StreamHelpers
+/// <summary>
+/// Provides few methods for Stream class.
+/// </summary>
+public static class StreamHelpers
 {
+    /// <summary>
+    /// Reads a specific amount of bytes from the current stream 
+    /// and writes them to another stream.
+    /// </summary>
+    /// <param name="outStream">The stream to which the contents of the current stream will be copied.</param>
+    /// <param name="size">The amount of bytes to read.</param>
+    /// <param name="showProgress">Show the amount of data read during the process in percentage.</param>
     public static void CopyStreamTo(this Stream inStream, Stream outStream, long size, bool showProgress)
     {
         int bufferSize = 81920;
         long amountRemaining = size;
+        var copyArray = new byte[bufferSize];
         long amountCopied = 0;
         decimal currentAmount;
 
         while (amountRemaining > 0)
         {
-            long arraySize = Math.Min(bufferSize, amountRemaining);
-            var copyArray = new byte[arraySize];
+            long readAmount = Math.Min(bufferSize, amountRemaining);
 
-            _ = inStream.Read(copyArray, 0, (int)arraySize);
-            outStream.Write(copyArray, 0, (int)arraySize);
+            _ = inStream.Read(copyArray, 0, (int)readAmount);
+            outStream.Write(copyArray, 0, (int)readAmount);
 
-            amountRemaining -= arraySize;
+            amountRemaining -= readAmount;
 
-            amountCopied += arraySize;
+            amountCopied += readAmount;
 
             if (showProgress)
             {
@@ -30,12 +40,19 @@ internal static class StreamHelpers
         }
     }
 
-
-    public static void PadNull(this Stream stream, int padAmount)
+    /// <summary>
+    /// Pads null bytes into a stream to make its size divisble by a pad value. 
+    /// ensure that the stream is safe for appending data.
+    /// </summary>
+    /// <param name="padValue">.</param>
+    public static void PadStream(this Stream stream, long padValue)
     {
-        for (int p = 0; p < padAmount; p++)
+        long remainderCheck;
+
+        if ((remainderCheck = stream.Length % padValue) != 0)
         {
-            stream.WriteByte(0);
+            var paddingData = new byte[padValue - remainderCheck];
+            stream.Write(paddingData, 0, paddingData.Length);
         }
     }
 }
