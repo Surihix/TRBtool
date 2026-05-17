@@ -13,7 +13,8 @@ Note: For the ``-r`` switch, the unpacked TRB folder name is specified in the ex
 
 ### Important
 - Repacking is supported only for the PC version TRB IMGB files.
-- If you are replacing the DDS images with the repack function, then make sure that the DDS compression/Pixel format used in your image file is supported by the games. please refer to this [texture format](https://github.com/LR-Research-Team/Datalog/wiki/TRB#texture-format) page for more info.
+- Please be careful when editing any of the 'RESOURCE' text files. if the data inside them, is not specified properly, then this tool will fail to repack the extracted TRB folder.
+- If you are replacing the DDS images with the repack function, then make sure that the DDS compression/Pixel format used in your image file, is supported by the game. refer this [page](https://github.com/LR-Research-Team/Datalog/wiki/TRB#texture-format) for a list of supported formats.
 - The Xbox 360 version image data is swizzled. due to this swizzled format, this tool will not unpack them correctly.
 
 ## For Developers

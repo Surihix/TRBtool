@@ -168,9 +168,7 @@ namespace TRBtool.Repack
             }
 
             Console.WriteLine("");
-            Console.WriteLine("Assembled final TRB file");
-            Console.WriteLine("");
-            Console.WriteLine("");
+            Console.WriteLine("Assembling final TRB file....");
 
             using (var finalTRBstream = new FileStream(outTRBfile, FileMode.Append, FileAccess.Write))
             {
@@ -179,6 +177,10 @@ namespace TRBtool.Repack
             }
 
             SharedMethods.IfFileExistsDel(tmpDataFile);
+
+            Console.WriteLine("Assembled final TRB file");
+            Console.WriteLine("");
+            Console.WriteLine("");
 
             Console.WriteLine("Finished repacking files to " + "\"" + Path.GetFileName(outTRBfile) + "\"");
         }
