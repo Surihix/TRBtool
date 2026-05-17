@@ -34,14 +34,14 @@ namespace TRBtool
 
                         if (computedHash != "4fb1654ab6da60cf0ad8b3663c82de38d5d049c691f69daa589f8120be9a4d35")
                         {
-                            TRBMethods.ErrorExit("Error: 'IMGBlibrary.dll' file is corrupt. please check if the dll file is valid.");
+                            SharedMethods.ErrorExit("Error: 'IMGBlibrary.dll' file is corrupt. please check if the dll file is valid.");
                         }
                     }
                 }
             }
             else
             {
-                TRBMethods.ErrorExit("Error: Missing 'IMGBlibrary.dll' file. please ensure that the dll file exists next to the program.");
+                SharedMethods.ErrorExit("Error: Missing 'IMGBlibrary.dll' file. please ensure that the dll file exists next to the program.");
             }
             #endif
 
