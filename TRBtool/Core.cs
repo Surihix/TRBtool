@@ -32,7 +32,7 @@ namespace TRBtool
                         var hashArray = dllHash.ComputeHash(dllStream);
                         var computedHash = BitConverter.ToString(hashArray).Replace("-", "").ToLower();
 
-                        if (computedHash != "4fb1654ab6da60cf0ad8b3663c82de38d5d049c691f69daa589f8120be9a4d35")
+                        if (computedHash != "f53440eccf80116163214babad6ba722505deb04b805fa1926e8b59cd5d2fac6")
                         {
                             SharedMethods.ErrorExit("Error: 'IMGBlibrary.dll' file is corrupt. please check if the dll file is valid.");
                         }
