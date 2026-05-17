@@ -52,7 +52,8 @@ namespace TRBtool.Repack
             var trbResourceIDTable = trbPackData.ResourceIDTable;
             var trbResourceTypeTable = trbPackData.ResourceTypesTable;
 
-            File.WriteAllBytes(outTRBfile, new byte[64 + (trbHeader.ResourceCount * 16)]);
+            var resourceInfoTableDataSize = trbHeader.ResourceCount * 16;
+            File.WriteAllBytes(outTRBfile, new byte[64 + resourceInfoTableDataSize]);
 
             using (var resInfoWriter = new BinaryWriter(File.Open(outTRBfile, FileMode.Open, FileAccess.Write)))
             {
@@ -168,6 +169,10 @@ namespace TRBtool.Repack
                         Console.WriteLine("");
                     }
                 }
+
+                resInfoWriter.BaseStream.Position = 16;
+                var trbSize = (uint)new FileInfo(tmpDataFile).Length + 64 + resourceInfoTableDataSize;
+                resInfoWriter.Write(trbSize);
             }
 
             Console.WriteLine("");
