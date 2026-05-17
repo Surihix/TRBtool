@@ -156,7 +156,10 @@ namespace TRBtool.Repack
 
                         TRBRepackHelpers.UpdateOffset(resInfoWriter, writePos, currentResInfoIndex, currentResourceOffset, currentResourceSize, currentResInfoType);
 
-                        mainDataStream.PadStream(16);
+                        if (trbResourceIDTable[pathIndex + i + 1] != SharedMethods.TRBResourceTypeString)
+                        {
+                            mainDataStream.PadStream(16);
+                        }
 
                         currentResourceOffset = (uint)mainDataStream.Position;
                         writePos += 16;
