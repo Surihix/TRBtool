@@ -4,7 +4,7 @@ using System.IO;
 /// <summary>
 /// Provides few methods for Stream class.
 /// </summary>
-public static class StreamHelpers
+internal static class StreamHelpers
 {
     /// <summary>
     /// Reads a specific amount of bytes from the current stream 
