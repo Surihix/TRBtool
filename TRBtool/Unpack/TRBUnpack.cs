@@ -37,11 +37,11 @@ namespace TRBtool.Unpack
             var trbResourceIDTable = trbLoadData.ResourceIDTable;
             var trbResourceTypeTable = trbLoadData.ResourceTypeTable;
 
+            Console.WriteLine("Unpacking resources....");
+            Console.WriteLine("");
+
             using (var trbFileReader = new BinaryReader(new FileStream(inTRBfile, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
-                Console.WriteLine("Unpacking resources....");
-                Console.WriteLine("");
-
                 for (int i = 0; i < trbHeader.ResourceCount; i++)
                 {
                     var currentResourceID = trbResourceIDTable[i];
@@ -86,7 +86,7 @@ namespace TRBtool.Unpack
 
                                     if (string.IsNullOrEmpty(currentID))
                                     {
-                                        txtTypeWriter.WriteLine("|-undefined-|");
+                                        txtTypeWriter.WriteLine("|-null-|");
                                         continue;
                                     }
 

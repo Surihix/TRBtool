@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography;
+using TRBtool.Repack;
 using TRBtool.Support;
 using TRBtool.Unpack;
 

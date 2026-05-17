@@ -5,7 +5,7 @@ using System.IO;
 using System.Text;
 using TRBtool.Support;
 
-namespace TRBtool
+namespace TRBtool.Repack
 {
     internal class TRBRepack
     {
@@ -20,15 +20,7 @@ namespace TRBtool
 
             var outTRBfileDir = Path.GetDirectoryName(inExtractedTRBdir);
             var outTRBfile = Path.Combine(outTRBfileDir, outTRBfileName);
-
-            var resourceInfoTxtFile = Path.Combine(inExtractedTRBdir, $"{SharedMethods.TRBResourceInfoFileString}.txt");
-            var resourceTypeTxtFile = Path.Combine(inExtractedTRBdir, $"{SharedMethods.TRBResourceTypeString}.txt");
-            var resourceIdTxtFile = Path.Combine(inExtractedTRBdir, $"{SharedMethods.TRBResourceIDString}.txt");
             var tmpDataFile = Path.Combine(inExtractedTRBdir, "_tempData");
-
-            TRBRepackHelpers.CheckFileExists(resourceInfoTxtFile, $"Error: Missing file '{SharedMethods.TRBResourceInfoFileString}.txt' in the extracted directory.");
-            TRBRepackHelpers.CheckFileExists(resourceTypeTxtFile, $"Error: Missing file '{SharedMethods.TRBResourceTypeString}.txt' in the extracted directory.");
-            TRBRepackHelpers.CheckFileExists(resourceIdTxtFile, $"Error: Missing file '{SharedMethods.TRBResourceIDString}.txt' in the extracted directory.");
 
             var outIMGBfileName = Path.GetFileNameWithoutExtension(outTRBfileName) + ".imgb";
             var outIMGBfile = Path.Combine(outTRBfileDir, outIMGBfileName);
@@ -53,61 +45,61 @@ namespace TRBtool
 
             Console.WriteLine("");
 
-            // Get RESOURCE_INFOs
-            var trb = TRBRepackHelpers.DeserializeResourceInfo(resourceInfoTxtFile);
+            var trbPackData = TRBTxtHelpers.GetTRBPackDataFromTxts(inExtractedTRBdir);
 
-            // Get RESOURCE_TYPEs
-            var resourceTypelist = TRBRepackHelpers.DeserializeResourceType(resourceTypeTxtFile);
+            var trbHeader = trbPackData.Header;
+            var trbResourceInfoTable = trbPackData.ResourceInfoTable;
+            var trbResourceIDTable = trbPackData.ResourceIDTable;
+            var trbResourceTypeTable = trbPackData.ResourceTypesTable;
 
-            // Get RESOURCE_IDs
-            var resourceIDList = TRBRepackHelpers.DeserializeResourceID(resourceIdTxtFile);
+            File.WriteAllBytes(outTRBfile, new byte[64 + (trbHeader.ResourceCount * 16)]);
 
-            // Build Resource info
-            File.WriteAllBytes(outTRBfile, new byte[64 + (trb.ResourceCount * 16)]);
-
-            // Repack files
             using (var resInfoWriter = new BinaryWriter(File.Open(outTRBfile, FileMode.Open, FileAccess.Write)))
             {
                 _ = resInfoWriter.BaseStream.Position = 0;
-                resInfoWriter.Write(Encoding.ASCII.GetBytes("SEDBRES "));
-                resInfoWriter.Write(trb.Version);
+                resInfoWriter.Write(Encoding.ASCII.GetBytes(trbHeader.Magic));
+                resInfoWriter.Write(trbHeader.Version);
 
                 _ = resInfoWriter.BaseStream.Position += 1;
-                resInfoWriter.Write(trb.MainType);
-                resInfoWriter.Write((ushort)64);
+                resInfoWriter.Write(trbHeader.MainType);
+                resInfoWriter.Write(trbHeader.HeaderSize);
 
                 _ = resInfoWriter.BaseStream.Position += 32;
-                resInfoWriter.Write(trb.ResourceCount);
+                resInfoWriter.Write(trbHeader.ResourceIDsCount);
 
                 _ = resInfoWriter.BaseStream.Position += 4;
-                resInfoWriter.Write(trb.ResourceCount);
-                resInfoWriter.Write(Encoding.ASCII.GetBytes("brt"));
+                resInfoWriter.Write(trbHeader.ResourceCount);
+                resInfoWriter.Write(Encoding.ASCII.GetBytes(trbHeader.FileType));
 
                 using (var mainDataStream = new FileStream(tmpDataFile, FileMode.Append, FileAccess.Write))
                 {
-                    var pathIndex = (int)trb.ResourceCount;
+                    var pathIndex = (int)trbHeader.ResourceIDsCount;
                     uint currentResourceOffset = 0;
                     uint currentResourceSize = 0;
                     long writePos = 64;
 
-                    for (int i = 0; i < trb.ResourceCount; i++)
+                    Console.WriteLine("Repacking resources....");
+                    Console.WriteLine("");
+
+                    for (int i = 0; i < trbHeader.ResourceCount; i++)
                     {
-                        var currentIndex = trb.ResourceInfo[i].Item1;
-                        var currentID = resourceIDList[pathIndex + i];
-                        var currentType = resourceTypelist[i];
-                        var currentTypeValue = trb.ResourceInfo[i].Item2;
+                        var currentResInfoIndex = trbResourceInfoTable[i].ResourceIndex;
+                        var currentResInfoType = trbResourceInfoTable[i].ResourceType;
+
+                        var currentID = trbResourceIDTable[pathIndex + i];
+                        var currentType = trbResourceTypeTable[i];
 
                         var currentFile = Path.Combine(inExtractedTRBdir, $"{currentID}.{currentType}");
 
                         if (currentID == SharedMethods.TRBResourceTypeString)
                         {
-                            var resourceTypeData = TRBRepackHelpers.BuildResourceType(resourceTypelist);
+                            var resourceTypeData = TRBRepackHelpers.BuildResourceTypesSection(trbResourceTypeTable);
                             mainDataStream.Write(resourceTypeData, 0, resourceTypeData.Length);
 
-                            uint resourceTypeMemSize = 64 + (trb.ResourceCount * 20);
-                            TRBRepackHelpers.UpdateOffset(resInfoWriter, writePos, currentIndex, currentResourceOffset, resourceTypeMemSize, currentTypeValue);
+                            uint resourceTypeMemSize = 64 + (trbHeader.ResourceCount * 20);
+                            TRBRepackHelpers.UpdateOffset(resInfoWriter, writePos, currentResInfoIndex, currentResourceOffset, resourceTypeMemSize, currentResInfoType);
 
-                            TRBRepackHelpers.DoPadding(16, mainDataStream);
+                            mainDataStream.PadStream(16);
                             currentResourceOffset = (uint)mainDataStream.Position;
 
                             writePos += 16;
@@ -116,15 +108,15 @@ namespace TRBtool
 
                         if (currentID == SharedMethods.TRBResourceIDString)
                         {
-                            var resourceIDData = TRBRepackHelpers.BuildResourceID(resourceIDList, trb.ResourceCount);
+                            var resourceIDData = TRBRepackHelpers.BuildResourceIDsSection(trbResourceIDTable, trbHeader.ResourceCount);
                             mainDataStream.Write(resourceIDData, 0, resourceIDData.Length);
 
                             _ = resInfoWriter.BaseStream.Position = 52;
-                            uint allPathsOffset = currentResourceOffset + (trb.ResourceCount * 16);
+                            uint allPathsOffset = currentResourceOffset + (trbHeader.ResourceCount * 16);
                             resInfoWriter.Write(allPathsOffset);
 
-                            uint resourceIDMemSize = 64 + (trb.ResourceCount * 32);
-                            TRBRepackHelpers.UpdateOffset(resInfoWriter, writePos, currentIndex, currentResourceOffset, resourceIDMemSize, currentTypeValue);
+                            uint resourceIDMemSize = 64 + (trbHeader.ResourceCount * 32);
+                            TRBRepackHelpers.UpdateOffset(resInfoWriter, writePos, currentResInfoIndex, currentResourceOffset, resourceIDMemSize, currentResInfoType);
                             continue;
                         }
 
@@ -133,7 +125,7 @@ namespace TRBtool
                             Console.WriteLine($"Missing '{currentID}.{currentType}' file. skipped to next file.");
 
                             _ = resInfoWriter.BaseStream.Position = writePos;
-                            TRBRepackHelpers.UpdateOffset(resInfoWriter, writePos, currentIndex, 0, 0, currentTypeValue);
+                            TRBRepackHelpers.UpdateOffset(resInfoWriter, writePos, currentResInfoIndex, 0, 0, currentResInfoType);
                             continue;
                         }
 
@@ -162,7 +154,8 @@ namespace TRBtool
                         File.Delete(currentFile);
                         File.Move(currentFileOG, currentFile);
 
-                        TRBRepackHelpers.UpdateOffset(resInfoWriter, writePos, currentIndex, currentResourceOffset, currentResourceSize, currentTypeValue);
+                        TRBRepackHelpers.UpdateOffset(resInfoWriter, writePos, currentResInfoIndex, currentResourceOffset, currentResourceSize, currentResInfoType);
+
                         mainDataStream.PadStream(16);
 
                         currentResourceOffset = (uint)mainDataStream.Position;

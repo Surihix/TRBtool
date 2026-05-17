@@ -6,6 +6,6 @@
         public TRBResourceInfoEntry[] ResourceInfoTable;
         public long ResourcesDataStartOffset;
         public string[] ResourceIDTable;
-        public string[] ResourceTypesTable;
+        public string[] ResourceTypeTable;
     }
 }
