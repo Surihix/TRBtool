@@ -45,14 +45,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TRBtool\Repack\TRBRepackHelpers.cs" />
-    <Compile Include="TRBtool\Structures\TRBHeader.cs" />
-    <Compile Include="TRBtool\Structures\TRBLoadData.cs" />
-    <Compile Include="TRBtool\Structures\TRBPackData.cs" />
-    <Compile Include="TRBtool\Structures\TRBResourceInfoEntry.cs" />
+    <Compile Include="TRBtool\Support\Extensions\BinaryReaderHelpers.cs" />
+    <Compile Include="TRBtool\Support\Extensions\StreamHelpers.cs" />
+    <Compile Include="TRBtool\Support\Structures\TRBHeader.cs" />
+    <Compile Include="TRBtool\Support\Structures\TRBLoadData.cs" />
+    <Compile Include="TRBtool\Support\Structures\TRBPackData.cs" />
+    <Compile Include="TRBtool\Support\Structures\TRBResourceInfoEntry.cs" />
     <Compile Include="TRBtool\Repack\TRBTxtHelpers.cs" />
-    <Compile Include="TRBtool\Extensions\BinaryReaderHelpers.cs" />
-    <Compile Include="TRBtool\Extensions\BinaryWriterHelpers.cs" />
-    <Compile Include="TRBtool\Extensions\StreamHelpers.cs" />
     <Compile Include="TRBtool\Support\SharedMethods.cs" />
     <Compile Include="TRBtool\Core.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

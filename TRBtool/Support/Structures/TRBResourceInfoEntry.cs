@@ -1,4 +1,4 @@
-﻿namespace TRBtool.Structures
+﻿namespace TRBtool.Support.Structures
 {
     internal class TRBResourceInfoEntry
     {

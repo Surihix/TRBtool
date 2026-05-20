@@ -6,8 +6,6 @@ namespace TRBtool.Support
 {
     internal class SharedMethods
     {
-        public static string TRBOffsetsFileString = "SEDBRES_OFFSETS";
-
         public static string TRBResourceInfoFileString = "RESOURCE_INFO";
 
         public static string TRBResourceTypeString = "RESOURCE_TYPE";

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using TRBtool.Structures;
 using TRBtool.Support;
+using TRBtool.Support.Structures;
 
 namespace TRBtool.Unpack
 {
